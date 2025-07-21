@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowRight, RotateCcw, Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -23,7 +24,10 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-  const handleAnswer = (weights: { [key: string]: number }, answerText: string) => {
+  const handleAnswer = (
+    weights: { [key: string]: number },
+    answerText: string
+  ) => {
     const newScores = { ...scores };
     setSelectedAnswers([...selectedAnswers, answerText]); // Store the selected answer text
 
@@ -58,38 +62,41 @@ export default function Home() {
     );
 
     const [bestDepartment] = sortedScores[0];
-    const departmentDescription = departments[bestDepartment as keyof typeof departments];
+    const departmentDescription =
+      departments[bestDepartment as keyof typeof departments];
 
     try {
-        const response = await fetch('/api/summarize', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                answers: selectedAnswers,
-                departmentDescription,
-            }),
-        });
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          answers: selectedAnswers,
+          departmentDescription,
+        }),
+      });
 
-        if (!response.ok) {
-            throw new Error('Failed to get summary');
-        }
+      if (!response.ok) {
+        throw new Error("Failed to get summary");
+      }
 
-        const data = await response.json();
-        setResult({
-            department: bestDepartment,
-            description: data.summary,
-        });
-
+      const data = await response.json();
+      setResult({
+        department: bestDepartment,
+        description: data.summary,
+      });
     } catch (error) {
-        console.error("Error fetching summary, falling back to default description.", error);
-        setResult({
-            department: bestDepartment,
-            description: departmentDescription, // Fallback to the original description
-        });
+      console.error(
+        "Error fetching summary, falling back to default description.",
+        error
+      );
+      setResult({
+        department: bestDepartment,
+        description: departmentDescription, // Fallback to the original description
+      });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -98,7 +105,7 @@ export default function Home() {
     setScores({});
     setSelectedAnswers([]); // Reset selected answers
     setShowResult(false);
-    setResult({ department: "", description: ""});
+    setResult({ department: "", description: "" });
   };
 
   const progressPercentage = (currentQuestion / quizQuestions.length) * 100;
@@ -171,28 +178,36 @@ export default function Home() {
             </CardHeader>
           )}
 
-          <CardContent className={showResult ? "quiz-results-section" : "quiz-answers-section"}>
+          <CardContent
+            className={
+              showResult ? "quiz-results-section" : "quiz-answers-section"
+            }
+          >
             {showResult ? (
               /* Improved Results Section */
               <div className="animate-fade-in-up">
                 {isLoading ? (
                   <div className="quiz-loading">
                     <Sparkles className="w-8 h-8 text-white animate-pulse" />
-                    <p className="quiz-loading-text">Analyzing your results...</p>
+                    <p className="quiz-loading-text">
+                      Analyzing your results...
+                    </p>
                   </div>
                 ) : (
                   <>
                     <div className="quiz-results-badge">
                       <Sparkles className="w-4 h-4 text-white" />
-                      <span className="quiz-results-badge-text">Your Top Department</span>
+                      <span className="quiz-results-badge-text">
+                        Your Top Department
+                      </span>
                     </div>
                     <h2 className="quiz-results-department no-ugly-glow">
                       {result.department}
                     </h2>
                     <div className="quiz-results-description">
-                      <p className="quiz-results-description-text">
-                        {result.description}
-                      </p>
+                      <div className="quiz-results-description-text">
+                        <ReactMarkdown>{result.description}</ReactMarkdown>
+                      </div>
                     </div>
                     <Button
                       onClick={restartQuiz}
@@ -214,9 +229,7 @@ export default function Home() {
                     onClick={() => handleAnswer(answer.weights, answer.text)}
                     className="quiz-answer-option"
                   >
-                    <span className="quiz-answer-text">
-                      {answer.text}
-                    </span>
+                    <span className="quiz-answer-text">{answer.text}</span>
                     <ArrowRight className="quiz-answer-arrow" />
                   </Button>
                 ))}
@@ -228,7 +241,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="text-center mt-8 animate-fade-in-up">
           <p className="text-white/50 text-xs md:text-sm">
-            Powered by advanced classification algorithms
+            Powered by You!
           </p>
         </footer>
       </div>

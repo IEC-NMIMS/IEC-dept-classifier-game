@@ -52,7 +52,84 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Add these breakpoint definitions */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Add these font size definitions */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+  --font-size-7xl: 4.5rem;
+  --font-size-8xl: 6rem;
+  --font-size-9xl: 8rem;
+
+  /* Add these line height definitions */
+  --line-height-xs: 1rem;
+  --line-height-sm: 1.25rem;
+  --line-height-base: 1.5rem;
+  --line-height-lg: 1.75rem;
+  --line-height-xl: 1.75rem;
+  --line-height-2xl: 2rem;
+  --line-height-3xl: 2.25rem;
+  --line-height-4xl: 2.5rem;
+  --line-height-5xl: 1;
+  --line-height-6xl: 1;
+  --line-height-7xl: 1;
+  --line-height-8xl: 1;
+  --line-height-9xl: 1;
+
+  /* SPACING DEFINITIONS FOR COMPLETE COVERAGE: */
+  --spacing-0: 0px;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-7: 1.75rem;
+  --spacing-8: 2rem;
+  --spacing-9: 2.25rem;
+  --spacing-10: 2.5rem;
+  --spacing-11: 2.75rem;
+  --spacing-12: 3rem;
+  --spacing-14: 3.5rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+  --spacing-28: 7rem;
+  --spacing-32: 8rem;
+  --spacing-36: 9rem;
+  --spacing-40: 10rem;
+  --spacing-44: 11rem;
+  --spacing-48: 12rem;
+  --spacing-52: 13rem;
+  --spacing-56: 14rem;
+  --spacing-60: 15rem;
+  --spacing-64: 16rem;
+  --spacing-72: 18rem;
+  --spacing-80: 20rem;
+  --spacing-96: 24rem;
+
+
+  /* MAX-WIDTH DEFINITIONS: */
+  --max-width-2xl: 42rem;
+  --max-width-4xl: 56rem;
+  --max-width-full: 100%;
 }
+
+
 
 :root {
   --radius: 1rem;
@@ -582,19 +659,20 @@
   position: relative;
   z-index: 10;
 }
-/* Enhanced Quiz Styling Improvements */
-
+/* Enhanced Quiz Styling Improvements - FIXED VERSION */
 /* Main Quiz Card Improvements */
-
 @layer components {
   .quiz-card {
-    @apply w-full max-w-2xl mx-auto;
+    width: 100%;
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 24px;
-    box-shadow: 
+    box-shadow:
       0 24px 64px rgba(0, 0, 0, 0.4),
       0 0 0 1px rgba(255, 255, 255, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -604,24 +682,41 @@
 
   /* Question Section Spacing */
   .quiz-question-section {
-    @apply p-8 pb-6;
+    padding: 2rem;
+    padding-bottom: 1.5rem;
   }
 
   .quiz-question-title {
-    @apply text-xl md:text-2xl font-bold text-white leading-relaxed text-center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    line-height: 1.625;
+    text-align: center;
     margin-bottom: 0;
-    line-height: 1.4;
     letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 768px) {
+    .quiz-question-title {
+      font-size: 1.5rem;
+    }
   }
 
   /* Answer Options Improved Spacing */
   .quiz-answers-section {
-    @apply px-8 pb-8;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 2rem;
     margin-top: 2rem;
   }
 
   .quiz-answer-option {
-    @apply w-full p-6 mb-4 text-left rounded-2xl transition-all duration-300;
+    width: 100%;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: left;
+    border-radius: 1rem;
+    transition: all 0.3s;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(16px);
@@ -639,32 +734,47 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 127, 46, 0.4);
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
       0 12px 32px rgba(0, 0, 0, 0.3),
       0 0 0 1px rgba(255, 127, 46, 0.2);
   }
 
   .quiz-answer-text {
-    @apply text-base md:text-lg text-white leading-relaxed;
+    font-size: 1rem;
+    color: white;
+    line-height: 1.625;
     margin: 0;
     padding-right: 3rem;
     font-weight: 500;
-    line-height: 1.5;
+  }
+
+  @media (min-width: 768px) {
+    .quiz-answer-text {
+      font-size: 1.125rem;
+    }
   }
 
   .quiz-answer-arrow {
-    @apply absolute right-6 top-1/2 transform -translate-y-1/2;
-    @apply w-5 h-5 text-white/60 opacity-0 transition-all duration-300;
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 0;
+    transition: all 0.3s;
   }
 
   .quiz-answer-option:hover .quiz-answer-arrow {
-    @apply opacity-100;
+    opacity: 1;
     transform: translateY(-50%) translateX(4px);
   }
 
   /* Results Section Improvements */
   .quiz-results-section {
-    @apply p-8 text-center;
+    padding: 2rem;
+    text-align: center;
     min-height: 400px;
     display: flex;
     flex-direction: column;
@@ -672,7 +782,12 @@
   }
 
   .quiz-results-badge {
-    @apply inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 9999px;
     background: rgba(255, 127, 46, 0.15);
     border: 1px solid rgba(255, 127, 46, 0.3);
     backdrop-filter: blur(12px);
@@ -680,21 +795,33 @@
   }
 
   .quiz-results-badge-text {
-    @apply text-sm font-semibold text-white/90;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
     letter-spacing: 0.02em;
   }
 
   .quiz-results-department {
-    @apply text-3xl md:text-4xl font-bold text-white mb-8;
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 2rem;
     letter-spacing: -0.02em;
     line-height: 1.1;
-    /* Remove the ugly glow effect */
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    /* Remove box-shadow from here */
+  }
+
+  @media (min-width: 768px) {
+    .quiz-results-department {
+      font-size: 2.25rem;
+    }
   }
 
   .quiz-results-description {
-    @apply max-w-2xl mx-auto mb-8;
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2rem;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
@@ -704,20 +831,32 @@
   }
 
   .quiz-results-description-text {
-    @apply text-base md:text-lg text-white/90 leading-relaxed;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.625;
     margin: 0;
-    line-height: 1.6;
     text-align: left;
     white-space: pre-line;
   }
 
+  @media (min-width: 768px) {
+    .quiz-results-description-text {
+      font-size: 1.125rem;
+    }
+  }
+
   .quiz-results-restart-button {
-    @apply px-8 py-4 text-lg font-semibold rounded-2xl;
-    @apply inline-flex items-center gap-3;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
     background: linear-gradient(135deg, #ff7f2e 0%, rgba(255, 127, 46, 0.9) 100%);
     color: white;
     border: 1px solid rgba(255, 127, 46, 0.4);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(255, 127, 46, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -727,39 +866,51 @@
 
   .quiz-results-restart-button:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
       0 12px 40px rgba(255, 127, 46, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   /* Loading State */
   .quiz-loading {
-    @apply flex items-center justify-center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-height: 200px;
     gap: 1rem;
   }
 
   .quiz-loading-text {
-    @apply text-lg text-white/90;
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.9);
     margin: 0;
   }
 
   /* Progress Bar Container */
   .quiz-progress-container {
-    @apply w-full mb-8;
+    width: 100%;
+    margin-bottom: 2rem;
   }
 
   .quiz-progress-labels {
-    @apply flex justify-between items-center mb-3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
   }
 
   .quiz-progress-label {
-    @apply text-sm font-medium text-white/80;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
   }
 
   /* Enhanced Progress Bar */
   .quiz-progress-bar {
-    @apply h-3 w-full rounded-full overflow-hidden;
+    height: 0.75rem;
+    width: 100%;
+    border-radius: 9999px;
+    overflow: hidden;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
@@ -772,56 +923,66 @@
       margin: 1rem;
       border-radius: 20px;
     }
-    
+
     .quiz-question-section {
-      @apply p-6 pb-4;
+      padding: 1.5rem;
+      padding-bottom: 1rem;
     }
-    
+
     .quiz-answers-section {
-      @apply px-6 pb-6;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-bottom: 1.5rem;
       margin-top: 1.5rem;
     }
-    
+
     .quiz-answer-option {
-      @apply p-5 mb-3;
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
     }
-    
+
     .quiz-answer-text {
-      @apply text-base;
+      font-size: 1rem;
       padding-right: 2.5rem;
     }
-    
+
     .quiz-results-section {
-      @apply p-6;
+      padding: 1.5rem;
       min-height: 350px;
     }
-    
+
     .quiz-results-description {
       padding: 1.5rem;
     }
-    
-    .quiz-results-department {
-      @apply text-2xl md:text-3xl mb-6;
-    }
-  }
 
-  /* Remove the problematic animate-pulse-glow class effects */
-  .no-ugly-glow {
-    animation: none !important;
-    box-shadow: none !important;
+    .quiz-results-department {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
   }
 
   /* Better spacing for the main container */
   .quiz-main-container {
-    @apply min-h-screen flex flex-col items-center justify-center p-4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
 
   .quiz-content-wrapper {
-    @apply w-full max-w-4xl mx-auto flex flex-col;
+    width: 100%;
+    max-width: 64rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
   }
 }
+
 
 
