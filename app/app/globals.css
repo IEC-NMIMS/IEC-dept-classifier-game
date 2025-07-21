@@ -9,8 +9,7 @@
 /* Font Face Declaration */
 @font-face {
   font-family: "ITCAvantGardeGothicStdBook";
-  src: url("/fonts/ITC\ Avant\ Garde\ Gothic\ Std\ Book.otf")
-    format("opentype");
+  src: url("/fonts/ITC\ Avant\ Garde\ Gothic\ Std\ Book.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -122,14 +121,11 @@
   --spacing-80: 20rem;
   --spacing-96: 24rem;
 
-
   /* MAX-WIDTH DEFINITIONS: */
   --max-width-2xl: 42rem;
   --max-width-4xl: 56rem;
   --max-width-full: 100%;
 }
-
-
 
 :root {
   --radius: 1rem;
@@ -672,8 +668,7 @@
     -webkit-backdrop-filter: blur(32px);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 24px;
-    box-shadow:
-      0 24px 64px rgba(0, 0, 0, 0.4),
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4),
       0 0 0 1px rgba(255, 255, 255, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
     overflow: hidden;
@@ -734,8 +729,7 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 127, 46, 0.4);
     transform: translateY(-2px);
-    box-shadow:
-      0 12px 32px rgba(0, 0, 0, 0.3),
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3),
       0 0 0 1px rgba(255, 127, 46, 0.2);
   }
 
@@ -853,11 +847,14 @@
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    background: linear-gradient(135deg, #ff7f2e 0%, rgba(255, 127, 46, 0.9) 100%);
+    background: linear-gradient(
+      135deg,
+      #ff7f2e 0%,
+      rgba(255, 127, 46, 0.9) 100%
+    );
     color: white;
     border: 1px solid rgba(255, 127, 46, 0.4);
-    box-shadow:
-      0 8px 32px rgba(255, 127, 46, 0.3),
+    box-shadow: 0 8px 32px rgba(255, 127, 46, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -866,8 +863,7 @@
 
   .quiz-results-restart-button:hover {
     transform: translateY(-2px);
-    box-shadow:
-      0 12px 40px rgba(255, 127, 46, 0.4),
+    box-shadow: 0 12px 40px rgba(255, 127, 46, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
@@ -984,5 +980,191 @@
   }
 }
 
+/* Enhanced Particle Gathering and Spinning Effects */
+.particle-container.gathering .particle {
+  animation: gatherAndSpin 3s ease-in-out infinite;
+}
 
+.particle-container.scattering .particle {
+  animation: scatterBack 1.5s ease-out forwards;
+}
 
+@keyframes gatherAndSpin {
+  0% {
+    transform: translateX(var(--start-x, 0px)) translateY(var(--start-y, 0px));
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(50vw) translateY(50vh) rotate(180deg) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(50vw) translateY(50vh) rotate(360deg) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+@keyframes scatterBack {
+  0% {
+    transform: translateX(50vw) translateY(50vh) rotate(360deg) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(var(--start-x, 0px)) translateY(var(--start-y, 0px)) rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+}
+
+/* Faster Swirling Gradient During Analysis */
+.swirling-gradient-bg.analyzing::before {
+  animation: swirl-fast 8s ease-in-out infinite;
+}
+
+.swirling-gradient-bg.analyzing::after {
+  animation: swirl-reverse-fast 10s ease-in-out infinite;
+}
+
+@keyframes swirl-fast {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.9;
+  }
+  25% {
+    transform: rotate(90deg) scale(1.2);
+    opacity: 0.7;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.8);
+    opacity: 1;
+  }
+  75% {
+    transform: rotate(270deg) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes swirl-reverse-fast {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.7;
+  }
+  25% {
+    transform: rotate(-90deg) scale(0.9);
+    opacity: 0.9;
+  }
+  50% {
+    transform: rotate(-180deg) scale(1.2);
+    opacity: 0.6;
+  }
+  75% {
+    transform: rotate(-270deg) scale(0.85);
+    opacity: 1;
+  }
+}
+
+/* Optimized Dramatic Department Name Reveal */
+.quiz-results-department.dramatic-reveal {
+  transform: scale(0);
+  opacity: 0;
+  animation: dramaticReveal 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes dramaticReveal {
+  0% {
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+    filter: blur(20px);
+  }
+  60% {
+    transform: scale(1.1) rotate(2deg);
+    opacity: 0.8;
+    filter: blur(5px);
+  }
+  80% {
+    transform: scale(0.95) rotate(-1deg);
+    opacity: 0.9;
+    filter: blur(2px);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    filter: blur(0px);
+    will-change: auto;
+  }
+}
+
+/* Performance-Optimized Description Expand Animation */
+.quiz-results-description.expand {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: expandDescription 1.5s ease-out forwards;
+  will-change: max-height, opacity, transform;
+}
+
+@keyframes expandDescription {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  50% {
+    max-height: 500px;
+    opacity: 0.5;
+    transform: translateY(10px);
+  }
+  100% {
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+    will-change: auto;
+  }
+}
+
+/* Enhanced Restart Button Reveal */
+.quiz-results-restart-button.delayed-reveal {
+  opacity: 0;
+  transform: translateY(30px) scale(0.8);
+  animation: delayedButtonReveal 1s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes delayedButtonReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    will-change: auto;
+  }
+}
+
+/* Enhanced Pulsing Effect for Loading Analysis */
+.quiz-loading.analyzing {
+  animation: pulseIntense 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseIntense {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* Performance optimizations */
+.particle {
+  will-change: transform, opacity;
+}
+
+.swirling-gradient-bg.analyzing::before,
+.swirling-gradient-bg.analyzing::after {
+  will-change: transform, opacity;
+}

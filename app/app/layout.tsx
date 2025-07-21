@@ -5,14 +5,13 @@ export const metadata: Metadata = {
   title: "IEC Department Classifier",
   description:
     "Find the best department for you with our intelligent classification system",
+  themeColor: "#0a0a0a",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };
-
-export const themeColor = "#0a0a0a";
 
 export default function RootLayout({
   children,
