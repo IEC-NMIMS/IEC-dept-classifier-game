@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     });
 
     const template = `
-      Based on the following quiz answers and the resulting department description, create a personalized summary for the user.
+      Based on the following quiz answers and the resulting department description, create a personalized summary(limited to 1 paragraph) for the user.
       Explain why the user is a good fit for the department based on the specific choices they made.
       Make it encouraging and insightful.
 
