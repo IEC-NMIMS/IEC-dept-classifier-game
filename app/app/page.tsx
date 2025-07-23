@@ -224,8 +224,9 @@ export default function Home() {
           {/* Header Section */}
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 animate-fade-in-up">
-              IEC Department Classifier
+              {/* IEC Department Classifier */}
             </h1>
+            <img src="\iec-logo.svg" alt="IEC Logo" className="mb-4 w-1/2" />
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto animate-slide-in-left">
               Discover your perfect department match through our intelligent
               assessment system
