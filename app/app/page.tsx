@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { quizQuestions, departments } from "../lib/quizData";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, RotateCcw, Sparkles } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, RotateCcw, Sparkles, Mail, X } from "lucide-react";
 
 export default function Home() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -20,24 +21,20 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Contact form states
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: ""
+  });
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  
   // Enhanced reveal states
   const [analysisMessage, setAnalysisMessage] = useState("");
   const [showDepartment, setShowDepartment] = useState(false);
-  const [summaryLoaded, setSummaryLoaded] = useState(false);
-  const [showDescription, setShowDescription] = useState(false);
   const [particleState, setParticleState] = useState("normal");
-
-  // Fun analysis messages
-  const analysisMessages = [
-    "🔍 Analyzing your responses...",
-    "🧠 Processing your preferences...",
-    "✨ Matching you with departments...",
-    "🎯 Finding your perfect fit...",
-    "⚡ Calculating compatibility scores...",
-    "🔬 Running advanced algorithms...",
-    "🎨 Crafting your personalized result...",
-    "🚀 Almost there...",
-  ];
 
   useEffect(() => {
     setIsClient(true);
@@ -55,6 +52,17 @@ export default function Home() {
   // Cycle through analysis messages
   useEffect(() => {
     if (isLoading) {
+      const analysisMessages = [
+        "🔍 Analyzing your responses...",
+        "🧠 Processing your preferences...",
+        "✨ Matching you with departments...",
+        "🎯 Finding your perfect fit...",
+        "⚡ Calculating compatibility scores...",
+        "🔬 Running advanced algorithms...",
+        "🎨 Crafting your personalized result...",
+        "🚀 Almost there...",
+      ];
+      
       let messageIndex = 0;
       setAnalysisMessage(analysisMessages[0]);
       
@@ -93,15 +101,15 @@ export default function Home() {
   };
 
   const calculateResult = async (finalScores: { [key: string]: number }) => {
-  if (Object.keys(finalScores).length === 0) {
-    setResult({
-      department: "No clear result",
-      description: "Please try the quiz again!",
-    });
-    setIsLoading(false);
-    setParticleState("normal");
-    return;
-  }
+    if (Object.keys(finalScores).length === 0) {
+      setResult({
+        department: "No clear result",
+        description: "Please try the quiz again!",
+      });
+      setIsLoading(false);
+      setParticleState("normal");
+      return;
+    }
 
     const sortedScores = Object.entries(finalScores).sort(
       (a, b) => b[1] - a[1]
@@ -111,18 +119,7 @@ export default function Home() {
       departments[bestDepartment as keyof typeof departments];
 
     try {
-      // First, reveal the department name
-      setTimeout(() => {
-        setResult(prev => ({
-          ...prev,
-          department: bestDepartment,
-        }));
-        setIsLoading(false);
-        setParticleState("scattering");
-        setShowDepartment(true);
-      }, 2500); // Let analysis run for 2.5 seconds
-
-      // Fetch the summary in background
+      // Get the AI-generated summary for email use
       const response = await fetch("/api/summarize", {
         method: "POST",
         headers: {
@@ -134,54 +131,34 @@ export default function Home() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get summary");
+      let aiSummary = departmentDescription; // Fallback to default description
+      if (response.ok) {
+        const data = await response.json();
+        aiSummary = data.summary;
       }
 
-      const data = await response.json();
-      
-      // Load the summary after department is revealed
+      // Reveal the department name after analysis
       setTimeout(() => {
-        setResult(prev => ({
-          ...prev,
-          description: data.summary,
-        }));
-        setSummaryLoaded(true);
-        
-        // Expand description after a brief delay
-        setTimeout(() => {
-          setShowDescription(true);
-          setParticleState("normal");
-        }, 500);
-      }, 3000); // Department reveal + 500ms
-
-    } catch (error) {
-      console.error(
-        "Error fetching summary, falling back to default description.",
-        error
-      );
-      
-      setTimeout(() => {
-        setResult(prev => ({
-          ...prev,
+        setResult({
           department: bestDepartment,
-        }));
+          description: aiSummary, // Store for email use
+        });
         setIsLoading(false);
         setParticleState("scattering");
         setShowDepartment(true);
-        
-        setTimeout(() => {
-          setResult(prev => ({
-            ...prev,
-            description: departmentDescription,
-          }));
-          setSummaryLoaded(true);
-          
-          setTimeout(() => {
-            setShowDescription(true);
-            setParticleState("normal");
-          }, 500);
-        }, 1000);
+      }, 2500); // Let analysis run for 2.5 seconds
+
+    } catch (error) {
+      console.error("Error fetching summary, using default description.", error);
+      
+      setTimeout(() => {
+        setResult({
+          department: bestDepartment,
+          description: departmentDescription, // Fallback description
+        });
+        setIsLoading(false);
+        setParticleState("scattering");
+        setShowDepartment(true);
       }, 2500);
     }
   };
@@ -194,9 +171,41 @@ export default function Home() {
     setResult({ department: "", description: "" });
     setIsLoading(false);
     setShowDepartment(false);
-    setSummaryLoaded(false);
-    setShowDescription(false);
     setParticleState("normal");
+    setShowContactForm(false);
+    setContactForm({ name: "", email: "", phone: "" });
+    setContactSubmitted(false);
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingContact(true);
+
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...contactForm,
+          department: result.department,
+          description: result.description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
+
+      setContactSubmitted(true);
+      setShowContactForm(false);
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      alert("Failed to send email. Please try again.");
+    } finally {
+      setIsSubmittingContact(false);
+    }
   };
 
   const progressPercentage = (currentQuestion / quizQuestions.length) * 100;
@@ -219,15 +228,19 @@ export default function Home() {
         </div>
       )}
 
-      <div className="content-layer quiz-main-container">
-        <div className="quiz-content-wrapper">
+      <div className="content-layer quiz-main-container flex items-center justify-center min-h-screen py-4">
+        <div className="quiz-content-wrapper max-w-4xl w-full">
           {/* Header Section */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 animate-fade-in-up">
+          <div className="text-center mb-4">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 animate-fade-in-up">
               {/* IEC Department Classifier */}
             </h1>
-            <img src="\iec-logo.svg" alt="IEC Logo" className="mb-4 w-1/2" />
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto animate-slide-in-left">
+            <Image 
+              src="/iec-logo.svg" 
+              alt="IEC Logo" 
+              className="mb-2 w-1/3 mx-auto" 
+            />
+            <p className="text-md md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left">
               Discover your perfect department match through our intelligent
               assessment system
             </p>
@@ -235,8 +248,8 @@ export default function Home() {
 
           {/* Progress Section */}
           {!showResult && (
-            <div className="quiz-progress-container">
-              <div className="quiz-progress-labels">
+            <div className="quiz-progress-container mb-2">
+              <div className="quiz-progress-labels flex justify-between text-sm">
                 <span className="quiz-progress-label">
                   Question {currentQuestion + 1} of {quizQuestions.length}
                 </span>
@@ -244,71 +257,81 @@ export default function Home() {
                   {Math.round(progressPercentage)}%
                 </span>
               </div>
-              <div className="quiz-progress-bar">
-                <Progress value={progressPercentage} className="progress-fill" />
+              <div className="quiz-progress-bar h-1">
+                <Progress value={progressPercentage} className="progress-fill h-1" />
               </div>
             </div>
           )}
 
           {/* Main Quiz Card */}
-          <Card className="quiz-card">
+          <Card className="quiz-card shadow-lg">
             <CardContent className="p-0">
               {!showResult && (
-                <div className="quiz-question-section">
-                  <h2 className="quiz-question-title">
+                <div className="quiz-question-section py-3 px-4">
+                  <h2 className="quiz-question-title text-lg font-medium">
                     {quizQuestions[currentQuestion].question}
                   </h2>
                 </div>
               )}
 
               {showResult ? (
-                <div className="quiz-results-section">
+                <div className="quiz-results-section p-4">
                   {isLoading ? (
-                    <div className="quiz-loading analyzing">
-                      <Sparkles className="w-8 h-8 text-orange-400 animate-spin" />
-                      <p className="quiz-loading-text">{analysisMessage}</p>
+                    <div className="quiz-loading analyzing flex flex-col items-center justify-center py-4">
+                      <Sparkles className="w-6 h-6 text-orange-400 animate-spin" />
+                      <p className="quiz-loading-text text-sm mt-2">{analysisMessage}</p>
                     </div>
                   ) : (
                     <>
-                      <div className="quiz-results-badge">
-                        <Sparkles className="w-4 h-4 text-orange-400" />
+                      <div className="quiz-results-badge flex items-center gap-1 text-xs">
+                        <Sparkles className="w-3 h-3 text-orange-400" />
                         <span className="quiz-results-badge-text">Your Top Department</span>
                       </div>
 
-                      <h2 className={`quiz-results-department ${showDepartment ? 'dramatic-reveal' : ''}`}>
+                      <h2 className={`quiz-results-department text-2xl font-bold mt-1 ${showDepartment ? 'dramatic-reveal' : ''}`}>
                         {showDepartment ? result.department : ''}
                       </h2>
 
-                      {summaryLoaded && (
-                        <div className={`quiz-results-description ${showDescription ? 'expand' : ''}`}>
-                          <div className="quiz-results-description-text">
-                            <ReactMarkdown>{result.description}</ReactMarkdown>
-                          </div>
+                      {showDepartment && (
+                        <div className="flex flex-col gap-2 mt-4">
+                          <Button
+                            onClick={() => setShowContactForm(true)}
+                            className="quiz-results-contact-button text-sm py-1"
+                          >
+                            <Mail className="w-4 h-4 mr-1" />
+                            Get Detailed Analysis via Email
+                          </Button>
+                          
+                          <Button
+                            onClick={restartQuiz}
+                            className="quiz-results-restart-button delayed-reveal text-sm py-1"
+                            variant="outline"
+                          >
+                            <RotateCcw className="w-4 h-4 mr-1" />
+                            Take Quiz Again
+                          </Button>
                         </div>
                       )}
 
-                      {showDescription && (
-                        <Button
-                          onClick={restartQuiz}
-                          className="quiz-results-restart-button delayed-reveal"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                          Take Quiz Again
-                        </Button>
+                      {contactSubmitted && (
+                        <div className="quiz-contact-success flex items-center gap-1 mt-2 text-xs bg-green-900/20 text-green-400 p-2 rounded">
+                          <Sparkles className="w-3 h-3 text-green-400 flex-shrink-0" />
+                          <span>Email sent! Check your inbox for insights.</span>
+                        </div>
                       )}
                     </>
                   )}
                 </div>
               ) : (
-                <div className="quiz-answers-section">
+                <div className="quiz-answers-section p-2 grid gap-2">
                   {quizQuestions[currentQuestion].answers.map((answer, index) => (
                     <button
                       key={index}
                       onClick={() => handleAnswer(answer.weights, answer.text)}
-                      className="quiz-answer-option"
+                      className="quiz-answer-option flex items-center justify-between py-2 px-3 hover:bg-gray-100/10 rounded-md transition"
                     >
-                      <span className="quiz-answer-text">{answer.text}</span>
-                      <ArrowRight className="quiz-answer-arrow" />
+                      <span className="quiz-answer-text text-sm">{answer.text}</span>
+                      <ArrowRight className="quiz-answer-arrow w-4 h-4" />
                     </button>
                   ))}
                 </div>
@@ -316,10 +339,124 @@ export default function Home() {
             </CardContent>
           </Card>
 
+          {/* Contact Form Modal */}
+            {showContactForm && (
+            <div className="quiz-modal-overlay fixed inset-0 flex items-center justify-center z-50 bg-black/70 px-4">
+              <div className="quiz-contact-modal bg-black border border-gray-800 rounded-xl shadow-xl overflow-hidden max-w-md w-full max-h-[90vh] overflow-y-auto">
+              <div className="modal-header bg-black p-3">
+                <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-bold text-white">
+                  ✨ Get Your Detailed Analysis
+                  </h3>
+                  <p className="text-white/80 text-xs">
+                  Personalized insights delivered to your inbox
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowContactForm(false)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-8 w-8 p-0"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+                </div>
+              </div>
+              
+              <div className="p-3 bg-black">
+                <div className="department-highlight bg-black/40 p-2 rounded-md">
+                <p className="text-white text-xs leading-relaxed">
+                  Enter your details to receive an analysis of why{" "}
+                  <span className="department-name font-semibold text-blue-400">{result.department}</span>{" "}
+                  is your perfect match. We&apos;ll email you personalized insights and next steps.
+                </p>
+                </div>
+                
+                <form onSubmit={handleContactSubmit} className="space-y-3 mt-2">
+                <div className="form-group">
+                  <label htmlFor="name" className="form-label text-white block mb-1 text-xs font-medium">
+                  Full Name *
+                  </label>
+                  <Input
+                  id="name"
+                  type="text"
+                  required
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter your full name"
+                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-8 px-2"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="email" className="form-label text-white block mb-1 text-xs font-medium">
+                  Email Address *
+                  </label>
+                  <Input
+                  id="email"
+                  type="email"
+                  required
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="Enter your email address"
+                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-8 px-2"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="phone" className="form-label text-white block mb-1 text-xs font-medium">
+                  Phone Number *
+                  </label>
+                  <Input
+                  id="phone"
+                  type="tel"
+                  required
+                  value={contactForm.phone}
+                  onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                  placeholder="Enter your phone number"
+                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-8 px-2"
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-3">
+                  <Button
+                  type="submit"
+                  disabled={isSubmittingContact}
+                  className="submit-button flex-1 bg-blue-600 hover:bg-blue-700 text-white py-0 h-7 text-xs"
+                  >
+                  {isSubmittingContact ? (
+                    <>
+                    <Sparkles className="w-3 h-3 animate-spin mr-1" />
+                    Sending...
+                    </>
+                  ) : (
+                    <>
+                    <Mail className="w-3 h-3 mr-1" />
+                    Send Analysis
+                    </>
+                  )}
+                  </Button>
+                  
+                  <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowContactForm(false)}
+                  disabled={isSubmittingContact}
+                  className="cancel-button text-white border-gray-600 hover:bg-gray-800 py-0 h-7 text-xs"
+                  >
+                  Cancel
+                  </Button>
+                </div>
+                </form>
+              </div>
+              </div>
+            </div>
+            )}
+
           {/* Footer */}
-          <div className="text-center text-white/60 text-sm">
-            Discover your perfect department match through our intelligent
-            assessment system
+          <div className="text-center text-white/60 text-xs mt-2">
+            Discover your perfect department match
           </div>
         </div>
       </div>
