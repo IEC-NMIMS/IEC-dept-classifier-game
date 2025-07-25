@@ -239,6 +239,8 @@ export default function Home() {
               src="/iec-logo.svg" 
               alt="IEC Logo" 
               className="mb-2 w-1/3 mx-auto" 
+              width={50}
+              height={50}
             />
             <p className="text-md md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left">
               Discover your perfect department match through our intelligent
@@ -368,7 +370,7 @@ export default function Home() {
                 <div className="department-highlight bg-black/40 p-2 rounded-md">
                 <p className="text-white text-xs leading-relaxed">
                   Enter your details to receive an analysis of why{" "}
-                  <span className="department-name font-semibold text-blue-400">{result.department}</span>{" "}
+                  <span className="department-name font-semibold ">{result.department}</span>{" "}
                   is your perfect match. We&apos;ll email you personalized insights and next steps.
                 </p>
                 </div>
@@ -448,6 +450,10 @@ export default function Home() {
                   Cancel
                   </Button>
                 </div>
+                {/* Consent statement */}
+                  <p className="text-[11px] text-white/60 text-center mt-3">
+                    By entering your email and phone number, you agree to receive promotional content from IEC.
+                  </p>
                 </form>
               </div>
               </div>
