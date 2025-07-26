@@ -212,6 +212,22 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen swirling-gradient-bg ${isLoading ? 'analyzing' : ''}`}>
+      {/* Fixed QR Code in top right corner */}
+      <div className="fixed top-4 right-4 z-50">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg hover:bg-white transition-all duration-300">
+          <Image 
+            src="/exec_gform_qr.jpg" 
+            alt="Executive Form QR Code" 
+            width={100}
+            height={100}
+            className="rounded"
+          />
+          <p className="text-[8px] text-gray-600 text-center mt-1 font-medium">
+            Executive Form
+          </p>
+        </div>
+      </div>
+
       {isClient && (
         <div className={`particle-container ${particleState}`}>
           {Array.from({ length: 500 }).map((_, i) => (
