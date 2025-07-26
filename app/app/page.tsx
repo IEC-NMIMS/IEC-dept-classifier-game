@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, RotateCcw, Sparkles, Mail, X } from "lucide-react";
+import confetti from 'canvas-confetti';
 
 export default function Home() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -20,6 +21,10 @@ export default function Home() {
   });
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Question transition states
+  const [isQuestionTransitioning, setIsQuestionTransitioning] = useState(false);
+  const [questionFadeClass, setQuestionFadeClass] = useState("");
   
   // Contact form states
   const [showContactForm, setShowContactForm] = useState(false);
@@ -35,6 +40,67 @@ export default function Home() {
   const [analysisMessage, setAnalysisMessage] = useState("");
   const [showDepartment, setShowDepartment] = useState(false);
   const [particleState, setParticleState] = useState("normal");
+
+  // Confetti animation functions
+  const triggerConfetti = () => {
+    // IEC-themed confetti colors
+    const colors = ['#ff7f2e', '#28359e', '#ffffff', '#fbbf24', '#34d399'];
+    
+    // Main burst
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: colors,
+      scalar: 1.2,
+      gravity: 1,
+      drift: 0,
+      ticks: 300
+    });
+
+    // Side bursts
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: colors
+      });
+    }, 150);
+
+    // Final cascade
+    setTimeout(() => {
+      confetti({
+        particleCount: 30,
+        spread: 120,
+        origin: { y: 0.4 },
+        colors: colors,
+        scalar: 0.8
+      });
+    }, 300);
+  };
+
+  const triggerSuccessConfetti = () => {
+    // Golden success confetti
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.8 },
+      colors: ['#ffd700', '#ffed4e', '#fbbf24', '#f59e0b'],
+      shapes: ['star', 'circle'],
+      scalar: 1.5,
+      gravity: 0.8,
+      ticks: 400
+    });
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -79,25 +145,43 @@ export default function Home() {
     weights: { [key: string]: number },
     answerText: string
   ) => {
-    const newScores = { ...scores };
-    setSelectedAnswers([...selectedAnswers, answerText]);
+    // Start the fade out animation
+    setIsQuestionTransitioning(true);
+    setQuestionFadeClass("question-fade-out");
 
-    for (const department in weights) {
-      newScores[department] =
-        (newScores[department] || 0) + weights[department];
-    }
+    // Wait for fade out to complete, then update question and fade in
+    setTimeout(() => {
+      const newScores = { ...scores };
+      setSelectedAnswers([...selectedAnswers, answerText]);
 
-    setScores(newScores);
+      for (const department in weights) {
+        newScores[department] =
+          (newScores[department] || 0) + weights[department];
+      }
 
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      // Immediately show the result screen with loading state
-      setShowResult(true);
-      setIsLoading(true);
-      setParticleState("gathering");
-      calculateResult(newScores);
-    }
+      setScores(newScores);
+
+      if (currentQuestion < quizQuestions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        
+        // Start fade in animation for the new question
+        setQuestionFadeClass("question-fade-in");
+        
+        // Reset transition state after fade in completes
+        setTimeout(() => {
+          setIsQuestionTransitioning(false);
+          setQuestionFadeClass("");
+        }, 400); // Duration of fade-in animation
+      } else {
+        // Immediately show the result screen with loading state
+        setShowResult(true);
+        setIsLoading(true);
+        setParticleState("gathering");
+        setIsQuestionTransitioning(false);
+        setQuestionFadeClass("");
+        calculateResult(newScores);
+      }
+    }, 300); // Duration of fade-out animation
   };
 
   const calculateResult = async (finalScores: { [key: string]: number }) => {
@@ -146,6 +230,11 @@ export default function Home() {
         setIsLoading(false);
         setParticleState("scattering");
         setShowDepartment(true);
+        
+        // Trigger confetti animation when result is revealed
+        setTimeout(() => {
+          triggerConfetti();
+        }, 200); // Small delay to let the result render first
       }, 2500); // Let analysis run for 2.5 seconds
 
     } catch (error) {
@@ -159,6 +248,11 @@ export default function Home() {
         setIsLoading(false);
         setParticleState("scattering");
         setShowDepartment(true);
+        
+        // Trigger confetti animation when result is revealed
+        setTimeout(() => {
+          triggerConfetti();
+        }, 200); // Small delay to let the result render first
       }, 2500);
     }
   };
@@ -175,6 +269,8 @@ export default function Home() {
     setShowContactForm(false);
     setContactForm({ name: "", email: "", phone: "" });
     setContactSubmitted(false);
+    setIsQuestionTransitioning(false);
+    setQuestionFadeClass("");
   };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
@@ -200,6 +296,11 @@ export default function Home() {
 
       setContactSubmitted(true);
       setShowContactForm(false);
+      
+      // Trigger success confetti for successful contact form submission
+      setTimeout(() => {
+        triggerSuccessConfetti();
+      }, 100);
     } catch (error) {
       console.error("Error submitting contact form:", error);
       alert("Failed to send email. Please try again.");
@@ -285,7 +386,7 @@ export default function Home() {
           <Card className="quiz-card shadow-lg">
             <CardContent className="p-0">
               {!showResult && (
-                <div className="quiz-question-section py-3 px-4">
+                <div className={`quiz-question-section py-3 px-4 ${questionFadeClass} ${isQuestionTransitioning ? 'question-transitioning' : ''}`}>
                   <h2 className="quiz-question-title text-lg font-medium">
                     {quizQuestions[currentQuestion].question}
                   </h2>
@@ -341,12 +442,13 @@ export default function Home() {
                   )}
                 </div>
               ) : (
-                <div className="quiz-answers-section p-2 grid gap-2">
+                <div className={`quiz-answers-section p-2 grid gap-2 ${isQuestionTransitioning ? 'question-transitioning' : ''}`}>
                   {quizQuestions[currentQuestion].answers.map((answer, index) => (
                     <button
                       key={index}
-                      onClick={() => handleAnswer(answer.weights, answer.text)}
-                      className="quiz-answer-option flex items-center justify-between py-2 px-3 hover:bg-gray-100/10 rounded-md transition"
+                      onClick={() => !isQuestionTransitioning && handleAnswer(answer.weights, answer.text)}
+                      disabled={isQuestionTransitioning}
+                      className="quiz-answer-option flex items-center justify-between py-2 px-3 hover:bg-gray-100/10 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <span className="quiz-answer-text text-sm">{answer.text}</span>
                       <ArrowRight className="quiz-answer-arrow w-4 h-4" />

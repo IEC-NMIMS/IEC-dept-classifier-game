@@ -599,6 +599,41 @@
   animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Question Fade Animations */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.question-fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.question-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.question-transitioning {
+  pointer-events: none;
+}
+
 /* Result Card Enhancement */
 .result-card {
   background: rgba(255, 255, 255, 0.1);

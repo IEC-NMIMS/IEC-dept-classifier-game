@@ -16,7 +16,7 @@ function markdownToHtml(text: string): string {
     // Convert numbered lists (1. item) to HTML lists
     .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
     // Wrap list items in <ol> tags
-    .replace(/(<li>.*<\/li>)/gs, '<ol>$1</ol>')
+    .replace(/(<li>.*<\/li>)/g, '<ol>$1</ol>')
     // Convert bullet points (- item or * item) to HTML lists
     .replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>')
     // Clean up any double ol tags
