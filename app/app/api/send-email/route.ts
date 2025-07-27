@@ -81,7 +81,10 @@ export async function POST(req: NextRequest) {
       subject: `Your IEC Department Match: ${department}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+          <div style="background: linear-gradient(135deg, #ff7f2e 0%, #28359e 50%, #0f0f3a 100%); padding: 30px; text-align: center;">
+            <div style="margin-bottom: 20px;">
+              <img src="https://i.ibb.co/rGpmZnsH/iec-logo.png" alt="IEC Logo" style="width: 200px; height: auto; display: block; margin: 0 auto; border: 0;">
+            </div>
             <h1 style="color: white; margin: 0; font-size: 24px;">IEC Department Classification Results</h1>
           </div>
           
@@ -89,29 +92,29 @@ export async function POST(req: NextRequest) {
             <h2 style="color: #333; margin-bottom: 20px;">Hello ${name}!</h2>
             
             <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
-              <h3 style="color: #667eea; margin-top: 0;">Your Perfect Department Match:</h3>
+              <h3 style="color: #28359e; margin-top: 0;">Your Perfect Department Match:</h3>
               <h2 style="color: #333; font-size: 28px; margin: 10px 0;">${department}</h2>
             </div>
             
             <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-              <h3 style="color: #667eea; margin-top: 0;">Why This Department is Perfect for You:</h3>
+              <h3 style="color: #28359e; margin-top: 0;">Why This Department is Perfect for You:</h3>
               <p style="color: #555; line-height: 1.6; margin-bottom: 0;">${htmlDescription}</p>
             </div>
             
-            <div style="margin-top: 30px; padding: 20px; background-color: #e8f2ff; border-radius: 8px; border-left: 4px solid #667eea;">
+            <div style="margin-top: 30px; padding: 20px; background-color: #e8f2ff; border-radius: 8px; border-left: 4px solid #28359e;">
               <p style="margin: 0; color: #333; font-size: 14px;">
                 <strong>Next Steps:</strong> Connect with the ${department} department to learn more about opportunities, 
                 projects, and how you can get involved. Your skills and interests align perfectly with what they're looking for!
               </p>
             </div>
             
-            <div style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; text-align: center;">
+            <div style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #ff7f2e 0%, #28359e 50%, #0f0f3a 100%); border-radius: 8px; text-align: center;">
               <h3 style="color: white; margin-top: 0; margin-bottom: 15px;">🚀 Take the Next Step!</h3>
               <p style="color: white; margin-bottom: 20px; font-size: 14px;">
                 Ready to join the IEC Executive Team? Apply for an executive position and help shape the future of our community!
               </p>
               <a href="https://docs.google.com/forms/d/e/1FAIpQLSeKWN_DaG_4IZPdYt-pJNYs_0-QgvviTX_Tgkod58TAOQTsYA/viewform" 
-                 style="display: inline-block; background-color: white; color: #667eea; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 14px; transition: all 0.3s ease;">
+                style="display: inline-block; background-color: white; color: #28359e; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 14px; transition: all 0.3s ease;">
                 Apply for Executive Position
               </a>
             </div>
@@ -124,6 +127,7 @@ export async function POST(req: NextRequest) {
         </div>
       `,
     };
+
 
     try {
       await transporter.sendMail(mailOptions);
