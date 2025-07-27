@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
-import { createObjectCsvWriter } from 'csv-writer';
+import { logToGoogleSheets } from '../../../lib/googleSheets';
 
 // Function to convert basic Markdown formatting to HTML
 function markdownToHtml(text: string): string {
@@ -37,38 +35,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
     }
 
-    // Save to CSV
-    const csvPath = path.join(process.cwd(), 'data', 'quiz_results.csv');
-    const dataDir = path.join(process.cwd(), 'data');
-    
-    // Ensure data directory exists
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    // Log the complete submission details for tracking
+    console.log('=== NEW QUIZ SUBMISSION ===');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Name:', name);
+    console.log('Email:', email);
+    console.log('Phone:', phone);
+    console.log('Department Match:', department);
+    console.log('Full Description:', description);
+    console.log('================================');
+
+    // Log to Google Sheets (if configured)
+    try {
+      const sheetsLogged = await logToGoogleSheets({
+        name,
+        email,
+        phone,
+        department,
+        description
+      });
+      
+      if (sheetsLogged) {
+        console.log('Successfully logged to Google Sheets');
+      } else {
+        console.log('Google Sheets logging failed or not configured');
+      }
+    } catch (sheetsError) {
+      console.error('Error logging to Google Sheets:', sheetsError);
+      // Don't fail the entire request if Google Sheets fails
     }
-
-    const csvWriter = createObjectCsvWriter({
-      path: csvPath,
-      header: [
-        { id: 'timestamp', title: 'Timestamp' },
-        { id: 'name', title: 'Name' },
-        { id: 'email', title: 'Email' },
-        { id: 'phone', title: 'Phone' },
-        { id: 'department', title: 'Department' },
-        { id: 'description', title: 'Description' }
-      ],
-      append: fs.existsSync(csvPath) // Append if file exists, create if not
-    });
-
-    const record = {
-      timestamp: new Date().toISOString(),
-      name,
-      email,
-      phone,
-      department,
-      description
-    };
-
-    await csvWriter.writeRecords([record]);
 
     // Send email
     const transporter = nodemailer.createTransport({
@@ -147,6 +142,34 @@ export async function POST(req: NextRequest) {
 
     try {
       await transporter.sendMail(mailOptions);
+      
+      // Also send a copy to yourself for record keeping
+      const adminMailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER, // Send to yourself
+        subject: `[IEC Quiz] New Submission - ${department}`,
+        html: `
+          <h3>New Quiz Submission Received</h3>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Department Match:</strong> ${department}</p>
+          <p><strong>Submission Time:</strong> ${new Date().toISOString()}</p>
+          <hr>
+          <h4>Full Description:</h4>
+          <div>${htmlDescription}</div>
+        `,
+      };
+      
+      // Send admin notification (don't fail if this fails)
+      try {
+        await transporter.sendMail(adminMailOptions);
+        console.log('Admin notification sent successfully');
+      } catch (adminEmailError) {
+        console.error('Failed to send admin notification:', adminEmailError);
+        // Don't return error - user email was successful
+      }
+      
     } catch (emailError) {
       console.error('Failed to send email:', emailError);
       return NextResponse.json({ 
@@ -157,12 +180,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Email sent successfully and data saved to CSV' 
+      message: 'Email sent successfully' 
     });
   } catch (error) {
     console.error('Error in send-email API:', error);
     return NextResponse.json({ 
-      error: 'Failed to send email or save data',
+      error: 'Failed to send email',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
