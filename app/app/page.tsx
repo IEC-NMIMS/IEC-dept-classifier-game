@@ -41,25 +41,28 @@ export default function Home() {
   const [showDepartment, setShowDepartment] = useState(false);
   const [particleState, setParticleState] = useState("normal");
 
-  // Confetti animation functions
+  // Confetti animation functions - optimized for mobile
   const triggerConfetti = () => {
+    // Check if mobile device
+    const isMobile = window.innerWidth < 768;
     // IEC-themed confetti colors
     const colors = ['#ff7f2e', '#28359e', '#ffffff', '#fbbf24', '#34d399'];
     
-    // Main burst
+    // Main burst - fewer particles on mobile
     confetti({
-      particleCount: 100,
-      spread: 70,
+      particleCount: isMobile ? 50 : 100,
+      spread: isMobile ? 50 : 70,
       origin: { y: 0.6 },
       colors: colors,
-      scalar: 1.2,
+      scalar: isMobile ? 0.8 : 1.2,
       gravity: 1,
       drift: 0,
-      ticks: 300
+      ticks: isMobile ? 200 : 300
     });
 
-    // Side bursts
-    setTimeout(() => {
+    // Side bursts - only on desktop
+    if (!isMobile) {
+      setTimeout(() => {
       confetti({
         particleCount: 50,
         angle: 60,
@@ -76,16 +79,17 @@ export default function Home() {
       });
     }, 150);
 
-    // Final cascade
+    // Final cascade - fewer particles on mobile
     setTimeout(() => {
       confetti({
-        particleCount: 30,
-        spread: 120,
+        particleCount: isMobile ? 15 : 30,
+        spread: isMobile ? 90 : 120,
         origin: { y: 0.4 },
         colors: colors,
-        scalar: 0.8
+        scalar: isMobile ? 0.6 : 0.8
       });
     }, 300);
+    }
   };
 
   const triggerSuccessConfetti = () => {
@@ -313,17 +317,17 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen swirling-gradient-bg ${isLoading ? 'analyzing' : ''}`}>
-      {/* Fixed QR Code in top right corner */}
-      <div className="fixed top-4 right-4 z-50">
+      {/* Fixed QR Code in top right corner - mobile optimized */}
+      <div className="fixed top-2 right-2 z-50 scale-75 origin-top-right sm:scale-100 sm:top-4 sm:right-4">
         <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg hover:bg-white transition-all duration-300">
           <Image 
             src="/exec_gform_qr.jpg" 
             alt="Executive Form QR Code" 
-            width={100}
-            height={100}
+            width={80}
+            height={80}
             className="rounded"
           />
-          <p className="text-[8px] text-gray-600 text-center mt-1 font-medium">
+          <p className="text-[7px] sm:text-[8px] text-gray-600 text-center mt-1 font-medium">
             Executive Form
           </p>
         </div>
@@ -331,7 +335,7 @@ export default function Home() {
 
       {isClient && (
         <div className={`particle-container ${particleState}`}>
-          {Array.from({ length: 500 }).map((_, i) => (
+          {Array.from({ length: window.innerWidth < 768 ? 200 : 500 }).map((_, i) => (
             <div
               key={i}
               className="particle"
@@ -345,21 +349,21 @@ export default function Home() {
         </div>
       )}
 
-      <div className="content-layer quiz-main-container flex items-center justify-center min-h-screen py-4">
+      <div className="content-layer quiz-main-container flex items-center justify-center min-h-screen py-2 px-2 sm:py-4 sm:px-4">
         <div className="quiz-content-wrapper max-w-4xl w-full">
-          {/* Header Section */}
-          <div className="text-center mb-4">
+          {/* Header Section - optimized for mobile */}
+          <div className="text-center mb-2 sm:mb-4">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 animate-fade-in-up">
               {/* IEC Department Classifier */}
             </h1>
             <Image 
               src="/iec-logo.svg" 
               alt="IEC Logo" 
-              className="mb-2 w-1/3 mx-auto" 
+              className="mb-2 sm:mb-4 w-1/2 sm:w-1/3 mx-auto" 
               width={50}
               height={50}
             />
-            <p className="text-md md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left">
+            <p className="text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left px-2">
               Discover your perfect department match through our intelligent
               assessment system
             </p>
@@ -396,9 +400,12 @@ export default function Home() {
               {showResult ? (
                 <div className="quiz-results-section p-4">
                   {isLoading ? (
-                    <div className="quiz-loading analyzing flex flex-col items-center justify-center py-4">
-                      <Sparkles className="w-6 h-6 text-orange-400 animate-spin" />
-                      <p className="quiz-loading-text text-sm mt-2">{analysisMessage}</p>
+                    <div className="quiz-loading analyzing flex flex-col items-center justify-center py-3 sm:py-4">
+                      <div className="relative">
+                        <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400 animate-spin" />
+                        <div className="absolute inset-0 bg-gradient-radial from-orange-400/20 to-transparent rounded-full animate-ping" />
+                      </div>
+                      <p className="quiz-loading-text text-xs sm:text-sm mt-2">{analysisMessage}</p>
                     </div>
                   ) : (
                     <>
@@ -448,10 +455,10 @@ export default function Home() {
                       key={index}
                       onClick={() => !isQuestionTransitioning && handleAnswer(answer.weights, answer.text)}
                       disabled={isQuestionTransitioning}
-                      className="quiz-answer-option flex items-center justify-between py-2 px-3 hover:bg-gray-100/10 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="quiz-answer-option flex items-center justify-between py-3 px-4 sm:py-2 sm:px-3 hover:bg-gray-100/10 active:bg-gray-100/15 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed relative"
                     >
-                      <span className="quiz-answer-text text-sm">{answer.text}</span>
-                      <ArrowRight className="quiz-answer-arrow w-4 h-4" />
+                      <span className="quiz-answer-text text-sm pr-8">{answer.text}</span>
+                      <ArrowRight className="quiz-answer-arrow w-4 h-4 absolute right-3" />
                     </button>
                   ))}
                 </div>
@@ -461,15 +468,15 @@ export default function Home() {
 
           {/* Contact Form Modal */}
             {showContactForm && (
-            <div className="quiz-modal-overlay fixed inset-0 flex items-center justify-center z-50 bg-black/70 px-4">
-              <div className="quiz-contact-modal bg-black border border-gray-800 rounded-xl shadow-xl overflow-hidden max-w-md w-full max-h-[90vh] overflow-y-auto">
-              <div className="modal-header bg-black p-3">
+            <div className="quiz-modal-overlay fixed inset-0 flex items-center justify-center z-50 bg-black/70 px-2 sm:px-4">
+              <div className="quiz-contact-modal bg-black border border-gray-800 rounded-xl shadow-xl overflow-hidden max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+              <div className="modal-header bg-black p-2 sm:p-3">
                 <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-base sm:text-lg font-bold text-white">
                   ✨ Get Your Detailed Analysis
                   </h3>
-                  <p className="text-white/80 text-xs">
+                  <p className="text-white/80 text-[10px] sm:text-xs">
                   Personalized insights delivered to your inbox
                   </p>
                 </div>
@@ -477,23 +484,23 @@ export default function Home() {
                   onClick={() => setShowContactForm(false)}
                   variant="ghost"
                   size="sm"
-                  className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-8 w-8 p-0"
+                  className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-7 w-7 sm:h-8 sm:w-8 p-0"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
                 </div>
               </div>
               
-              <div className="p-3 bg-black">
+              <div className="p-2 sm:p-3 bg-black">
                 <div className="department-highlight bg-black/40 p-2 rounded-md">
-                <p className="text-white text-xs leading-relaxed">
+                <p className="text-white text-[11px] sm:text-xs leading-relaxed">
                   Enter your details to receive an analysis of why{" "}
                   <span className="department-name font-semibold ">{result.department}</span>{" "}
                   is your perfect match. We&apos;ll email you personalized insights and next steps.
                 </p>
                 </div>
                 
-                <form onSubmit={handleContactSubmit} className="space-y-3 mt-2">
+                <form onSubmit={handleContactSubmit} className="space-y-2 sm:space-y-3 mt-2">
                 <div className="form-group">
                   <label htmlFor="name" className="form-label text-white block mb-1 text-xs font-medium">
                   Full Name *
