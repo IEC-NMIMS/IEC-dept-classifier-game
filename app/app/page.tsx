@@ -360,10 +360,10 @@ export default function Home() {
               <Image 
                 src="/iec-logo.svg" 
                 alt="IEC Logo" 
-                className="w-20 sm:w-28 md:w-32 lg:w-36 h-auto" 
-                width={144}
-                height={144}
-                priority
+                className="mb-2 sm:mb-4 w-1/2 sm:w-1/3 mx-auto" 
+                width={90}
+                height={50}
+                
               />
             </div>
             <p className="text-xs sm:text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left px-3 leading-relaxed">
@@ -452,7 +452,7 @@ export default function Home() {
                   )}
                 </div>
               ) : (
-                <div className={`quiz-answers-section p-2 grid gap-2 ${isQuestionTransitioning ? 'question-transitioning' : ''}`}>
+                <div className={`quiz-answers-section p-2 grid ${isQuestionTransitioning ? 'question-transitioning' : ''}`}>
                   {quizQuestions[currentQuestion].answers.map((answer, index) => (
                     <button
                       key={index}

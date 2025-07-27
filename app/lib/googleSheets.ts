@@ -72,7 +72,7 @@ export async function logToGoogleSheets(data: {
     }
 
     // Append the new row
-    const result = await sheets.spreadsheets.values.append({
+    await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range: RANGE,
       valueInputOption: 'RAW',
@@ -82,7 +82,7 @@ export async function logToGoogleSheets(data: {
       },
     });
 
-    console.log('Successfully logged to Google Sheets:', result.data.updates?.updatedRows, 'row(s) added');
+    
     return true;
   } catch (error) {
     console.error('Error logging to Google Sheets:', error);
@@ -109,8 +109,6 @@ export async function createGoogleSheet(title: string = 'IEC Quiz Submissions') 
     });
 
     const spreadsheetId = response.data.spreadsheetId;
-    console.log('Created new Google Sheet with ID:', spreadsheetId);
-    
     if (!spreadsheetId) {
       throw new Error('Failed to create Google Sheet: spreadsheetId is null or undefined');
     }
