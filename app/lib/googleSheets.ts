@@ -111,6 +111,10 @@ export async function createGoogleSheet(title: string = 'IEC Quiz Submissions') 
     const spreadsheetId = response.data.spreadsheetId;
     console.log('Created new Google Sheet with ID:', spreadsheetId);
     
+    if (!spreadsheetId) {
+      throw new Error('Failed to create Google Sheet: spreadsheetId is null or undefined');
+    }
+    
     // Add headers
     await sheets.spreadsheets.values.update({
       spreadsheetId,
