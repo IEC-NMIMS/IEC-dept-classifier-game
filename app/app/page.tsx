@@ -316,18 +316,18 @@ export default function Home() {
   const progressPercentage = (currentQuestion / quizQuestions.length) * 100;
 
   return (
-    <div className={`min-h-screen swirling-gradient-bg ${isLoading ? 'analyzing' : ''}`}>
+    <div className={`min-h-[100svh] swirling-gradient-bg ${isLoading ? 'analyzing' : ''}`}>
       {/* Fixed QR Code in top right corner - mobile optimized */}
-      <div className="fixed top-2 right-2 z-50 scale-75 origin-top-right sm:scale-100 sm:top-4 sm:right-4">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg hover:bg-white transition-all duration-300">
+      <div className="fixed top-1 right-1 z-50 scale-75 origin-top-right sm:scale-100 sm:top-4 sm:right-4">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-1.5 sm:p-2 shadow-lg hover:bg-white transition-all duration-300">
           <Image 
             src="/exec_gform_qr.jpg" 
             alt="Executive Form QR Code" 
-            width={80}
-            height={80}
-            className="rounded"
+            width={60}
+            height={60}
+            className="rounded sm:w-[80px] sm:h-[80px]"
           />
-          <p className="text-[7px] sm:text-[8px] text-gray-600 text-center mt-1 font-medium">
+          <p className="text-[6px] sm:text-[8px] text-gray-600 text-center mt-1 font-medium">
             Executive Form
           </p>
         </div>
@@ -350,20 +350,23 @@ export default function Home() {
       )}
 
       <div className="content-layer quiz-main-container flex items-center justify-center min-h-screen py-2 px-2 sm:py-4 sm:px-4">
-        <div className="quiz-content-wrapper max-w-4xl w-full">
+        <div className="quiz-content-wrapper max-w-4xl w-full mx-auto">
           {/* Header Section - optimized for mobile */}
-          <div className="text-center mb-2 sm:mb-4">
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 animate-fade-in-up">
+          <div className="text-center mb-3 sm:mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 animate-fade-in-up">
               {/* IEC Department Classifier */}
             </h1>
-            <Image 
-              src="/iec-logo.svg" 
-              alt="IEC Logo" 
-              className="mb-2 sm:mb-4 w-1/2 sm:w-1/3 mx-auto" 
-              width={50}
-              height={50}
-            />
-            <p className="text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left px-2">
+            <div className="flex justify-center mb-3 sm:mb-4">
+              <Image 
+                src="/iec-logo.svg" 
+                alt="IEC Logo" 
+                className="w-20 sm:w-28 md:w-32 lg:w-36 h-auto" 
+                width={144}
+                height={144}
+                priority
+              />
+            </div>
+            <p className="text-xs sm:text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-slide-in-left px-3 leading-relaxed">
               Discover your perfect department match through our intelligent
               assessment system
             </p>
@@ -468,15 +471,15 @@ export default function Home() {
 
           {/* Contact Form Modal */}
             {showContactForm && (
-            <div className="quiz-modal-overlay fixed inset-0 flex items-center justify-center z-50 bg-black/70 px-2 sm:px-4">
-              <div className="quiz-contact-modal bg-black border border-gray-800 rounded-xl shadow-xl overflow-hidden max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
-              <div className="modal-header bg-black p-2 sm:p-3">
+            <div className="quiz-modal-overlay fixed inset-0 flex items-center justify-center z-50 bg-black/70 p-2">
+              <div className="quiz-contact-modal bg-black border border-gray-800 rounded-xl shadow-xl overflow-hidden w-full max-w-md max-h-[95vh] overflow-y-auto">
+              <div className="modal-header bg-black p-3">
                 <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-white">
                   ✨ Get Your Detailed Analysis
                   </h3>
-                  <p className="text-white/80 text-[10px] sm:text-xs">
+                  <p className="text-white/80 text-xs">
                   Personalized insights delivered to your inbox
                   </p>
                 </div>
@@ -484,23 +487,23 @@ export default function Home() {
                   onClick={() => setShowContactForm(false)}
                   variant="ghost"
                   size="sm"
-                  className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-7 w-7 sm:h-8 sm:w-8 p-0"
+                  className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-8 w-8 p-0 flex-shrink-0"
                 >
-                  <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <X className="w-4 h-4" />
                 </Button>
                 </div>
               </div>
               
-              <div className="p-2 sm:p-3 bg-black">
-                <div className="department-highlight bg-black/40 p-2 rounded-md">
-                <p className="text-white text-[11px] sm:text-xs leading-relaxed">
+              <div className="p-3 bg-black">
+                <div className="department-highlight bg-black/40 p-3 rounded-md">
+                <p className="text-white text-xs leading-relaxed">
                   Enter your details to receive an analysis of why{" "}
                   <span className="department-name font-semibold ">{result.department}</span>{" "}
                   is your perfect match. We&apos;ll email you personalized insights and next steps.
                 </p>
                 </div>
                 
-                <form onSubmit={handleContactSubmit} className="space-y-2 sm:space-y-3 mt-2">
+                <form onSubmit={handleContactSubmit} className="space-y-3 mt-3">
                 <div className="form-group">
                   <label htmlFor="name" className="form-label text-white block mb-1 text-xs font-medium">
                   Full Name *
@@ -512,7 +515,7 @@ export default function Home() {
                   value={contactForm.name}
                   onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Enter your full name"
-                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-8 px-2"
+                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-10 px-3"
                   />
                 </div>
                 
@@ -527,7 +530,7 @@ export default function Home() {
                   value={contactForm.email}
                   onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Enter your email address"
-                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-8 px-2"
+                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-10 px-3"
                   />
                 </div>
                 
@@ -542,24 +545,24 @@ export default function Home() {
                   value={contactForm.phone}
                   onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
                   placeholder="Enter your phone number"
-                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-8 px-2"
+                  className="form-input bg-gray-900 border-gray-700 text-white placeholder-gray-400 text-sm h-10 px-3"
                   />
                 </div>
                 
-                <div className="flex gap-2 pt-3">
+                <div className="flex gap-2 pt-2">
                   <Button
                   type="submit"
                   disabled={isSubmittingContact}
-                  className="submit-button flex-1 bg-blue-600 hover:bg-blue-700 text-white py-0 h-7 text-xs"
+                  className="submit-button flex-1 bg-blue-600 hover:bg-blue-700 text-white h-10 text-sm"
                   >
                   {isSubmittingContact ? (
                     <>
-                    <Sparkles className="w-3 h-3 animate-spin mr-1" />
+                    <Sparkles className="w-4 h-4 animate-spin mr-2" />
                     Sending...
                     </>
                   ) : (
                     <>
-                    <Mail className="w-3 h-3 mr-1" />
+                    <Mail className="w-4 h-4 mr-2" />
                     Send Analysis
                     </>
                   )}
@@ -570,13 +573,13 @@ export default function Home() {
                   variant="outline"
                   onClick={() => setShowContactForm(false)}
                   disabled={isSubmittingContact}
-                  className="cancel-button text-white border-gray-600 hover:bg-gray-800 py-0 h-7 text-xs"
+                  className="cancel-button text-white border-gray-600 hover:bg-gray-800 h-10 text-sm px-4"
                   >
                   Cancel
                   </Button>
                 </div>
                 {/* Consent statement */}
-                  <p className="text-[11px] text-white/60 text-center mt-3">
+                  <p className="text-xs text-white/60 text-center mt-3 leading-relaxed">
                     By entering your email and phone number, you agree to receive promotional content from IEC.
                   </p>
                 </form>

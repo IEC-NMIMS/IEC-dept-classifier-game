@@ -708,6 +708,25 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
     overflow: hidden;
     position: relative;
+    /* Ensure proper centering */
+    display: block;
+  }
+
+  /* Mobile-first responsive design */
+  @media (max-width: 640px) {
+    .quiz-card {
+      max-width: calc(100vw - 1rem);
+      margin: 0 0.5rem;
+      border-radius: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .quiz-card {
+      max-width: calc(100vw - 0.5rem);
+      margin: 0 0.25rem;
+      border-radius: 12px;
+    }
   }
 
   /* Question Section Spacing */
@@ -951,57 +970,104 @@
   /* Responsive Improvements */
   @media (max-width: 768px) {
     .quiz-card {
-      margin: 1rem;
+      margin: 0.5rem;
       border-radius: 20px;
+      max-width: calc(100vw - 1rem);
     }
 
     .quiz-question-section {
-      padding: 1.5rem;
-      padding-bottom: 1rem;
+      padding: 1rem;
+      padding-bottom: 0.75rem;
     }
 
     .quiz-answers-section {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-      padding-bottom: 1.5rem;
-      margin-top: 1.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-bottom: 1rem;
+      margin-top: 0.5rem;
     }
 
     .quiz-answer-option {
-      padding: 1.25rem;
-      margin-bottom: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
     }
 
     .quiz-answer-text {
-      font-size: 1rem;
-      padding-right: 2.5rem;
+      font-size: 0.875rem;
+      padding-right: 2rem;
+      line-height: 1.4;
     }
 
     .quiz-results-section {
-      padding: 1.5rem;
-      min-height: 350px;
+      padding: 1rem;
+      min-height: 250px;
     }
 
     .quiz-results-description {
-      padding: 1.5rem;
+      padding: 1rem;
     }
 
     .quiz-results-department {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+  }
+
+  /* Extra small mobile devices */
+  @media (max-width: 480px) {
+    .quiz-card {
+      margin: 0.25rem;
+      border-radius: 16px;
+      max-width: calc(100vw - 0.5rem);
+    }
+
+    .quiz-question-section {
+      padding: 0.75rem;
+    }
+
+    .quiz-answers-section {
+      padding: 0.75rem;
+    }
+
+    .quiz-answer-option {
+      padding: 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .quiz-answer-text {
+      font-size: 0.8125rem;
+      padding-right: 1.75rem;
+    }
+
+    .quiz-results-section {
+      padding: 0.75rem;
+      min-height: 200px;
     }
   }
 
   /* Better spacing for the main container */
   .quiz-main-container {
     min-height: 100vh;
+    min-height: 100svh; /* Support for newer viewport units */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    /* Ensure proper centering on all devices */
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 640px) {
+    .quiz-main-container {
+      padding: 1rem;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
   }
 
   .quiz-content-wrapper {
@@ -1011,7 +1077,88 @@
     margin-right: auto;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
+    /* Ensure content is centered */
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (min-width: 640px) {
+    .quiz-content-wrapper {
+      gap: 2rem;
+    }
+  }
+}
+
+/* Mobile-first responsive optimizations */
+@media (max-width: 640px) {
+  /* Ensure proper viewport handling on mobile */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Optimize header for mobile */
+  .text-3xl {
+    font-size: 1.875rem !important;
+  }
+  
+  /* Better button sizing on mobile */
+  .quiz-results-contact-button,
+  .quiz-results-restart-button {
+    min-height: 44px; /* Apple's recommended touch target size */
+    font-size: 0.875rem;
+  }
+  
+  /* Improve QR code positioning on mobile */
+  .fixed.top-2.right-2 {
+    top: 0.25rem;
+    right: 0.25rem;
+  }
+  
+  /* Better progress bar visibility on mobile */
+  .quiz-progress-container {
+    margin-bottom: 0.75rem;
+  }
+  
+  .quiz-progress-labels {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Further optimizations for very small screens */
+  .text-3xl {
+    font-size: 1.5rem !important;
+  }
+  
+  .text-sm {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Ensure touch targets are properly sized */
+  .quiz-answer-option {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Better modal sizing on very small screens */
+  .quiz-contact-modal {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+  }
+}
+
+/* Improve touch interactions */
+@media (hover: none) and (pointer: coarse) {
+  .quiz-answer-option:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+  }
+  
+  .quiz-answer-option:active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(0.98);
+    transition: all 0.1s ease;
   }
 }
 
