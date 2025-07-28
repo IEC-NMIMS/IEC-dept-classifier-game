@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: "IEC Department Classifier",
@@ -38,3 +39,4 @@ export default function RootLayout({
     </html>
   );
 }
+<SpeedInsights/>
